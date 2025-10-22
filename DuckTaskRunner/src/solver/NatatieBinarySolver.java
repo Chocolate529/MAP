@@ -2,18 +2,24 @@ package solver;
 
 import domain.Duck;
 import domain.Lane;
+import factory.Strategy;
+import model.SwimTask;
+import model.Task;
 import reader.NatatieFileReader;
+import taskrunner.DuckTaskRunner;
 import utils.enums.SolvingStrategy;
 import writer.NatatieFileWriter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static java.lang.Math.abs;
 import static utils.Constants.ALFA;
 
 public class NatatieBinarySolver extends NatatieTaskSolver{
     private SolvingStrategy strategy;
+    private DuckTaskRunner runner;
 
     private Double minVal = 0.0;
     private Double maxVal;
@@ -28,6 +34,7 @@ public class NatatieBinarySolver extends NatatieTaskSolver{
         this.strategy = strategy;
         this.ducks = reader.getDucks();
         this.lanes = reader.getLanes();
+        this.runner = new DuckTaskRunner(Strategy.SORTED_ARRAY);
     }
 
     @Override
@@ -36,13 +43,9 @@ public class NatatieBinarySolver extends NatatieTaskSolver{
             throw new RuntimeException("Execute before solving");
         }
 
-        for (Duck duck : ducks) {
-            System.out.println(duck.toString());
-        }
-
         while (Math.abs(maxVal - minVal) > ALFA) {
             Double midVal = (maxVal + minVal) / 2;
-
+            runner.clear();
             if (canFinishRace(midVal))
             {
                 maxVal = midVal;
@@ -51,26 +54,29 @@ public class NatatieBinarySolver extends NatatieTaskSolver{
             }
         }
 
+        writer.setMinTime(minVal);
+        writer.write();
+
+
+
         return maxVal;
     }
 
     private Boolean canFinishRace(Double timeLimit) {
         int laneIndex = 0;
-        Duck lastDuck = null;
 
         for (Duck duck : ducks) {
             if (laneIndex == lanes.size()) {
                 break;
             }
 
-            Lane lane = lanes.get(laneIndex);
-            double time = 2.0 * lane.getLenght() / duck.getViteza();
+            var lane = lanes.get(laneIndex);
+            SwimTask task = new SwimTask(duck.toString()+lane.toString(),"",duck,lane,timeLimit, duck.getRezistena());
+            task.execute();
 
-
-            if (time <= timeLimit ) {
-                lastDuck = duck;
+            if (task.hasGoodTime(timeLimit)) {
+                runner.addTask(task);
                 laneIndex++;
-
             }
         }
 
@@ -81,7 +87,8 @@ public class NatatieBinarySolver extends NatatieTaskSolver{
     public void execute() {
         Collections.sort(ducks);
         maxVal = findMaxInterval();
-        lanes.sort((a, b) -> a.getLenght().compareTo(b.getLenght()));
+
+
         executed = true;
     }
 
@@ -104,5 +111,9 @@ public class NatatieBinarySolver extends NatatieTaskSolver{
 
     private Lane getLongestLane(){
         return lanes.getLast();
+    }
+
+    public List<Task> getUsedTasks(){
+        return runner.getAll();
     }
 }

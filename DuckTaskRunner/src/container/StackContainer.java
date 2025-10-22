@@ -2,6 +2,8 @@ package container;
 
 import model.Task;
 
+import java.util.List;
+
 public class StackContainer implements Container {
 
     private Task[] tasks;
@@ -19,6 +21,11 @@ public class StackContainer implements Container {
         }
 
         return null;
+    }
+
+    @Override
+    public List<Task> getTasks() {
+        return List.of();
     }
 
     @Override

@@ -2,6 +2,8 @@ package container;
 
 import model.Task;
 
+import java.util.List;
+
 public interface Container {
 
     Task remove();
@@ -11,4 +13,5 @@ public interface Container {
     int size();
 
     boolean isEmpty();
+    List<Task> getTasks();
 }

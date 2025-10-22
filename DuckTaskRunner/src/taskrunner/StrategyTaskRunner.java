@@ -5,6 +5,8 @@ import factory.Strategy;
 import factory.TaskContainerFactory;
 import model.Task;
 
+import java.util.List;
+
 public class StrategyTaskRunner implements TaskRunner{
 
     private Container container;
@@ -35,5 +37,14 @@ public class StrategyTaskRunner implements TaskRunner{
     @Override
     public boolean hasTask() {
         return !container.isEmpty();
+    }
+
+    public void clear(){
+        while(!this.container.isEmpty()){
+            container.remove();
+        }
+    }
+    public List<Task> getAll(){
+        return container.getTasks();
     }
 }

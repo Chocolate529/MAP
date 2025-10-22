@@ -17,8 +17,8 @@ public class SwimTask extends Task{
         this.timeLimit = timeLimit;
     }
 
-    public SwimTask(String taskId, String description, Duck duck, Lane lane, Double timeLimit) {
-        super(taskId, description);
+    public SwimTask(String taskId, String description, Duck duck, Lane lane, Double timeLimit, int priority) {
+        super(taskId, description, priority);
         this.duck = duck;
         this.lane = lane;
         this.timeLimit = timeLimit;
@@ -40,7 +40,7 @@ public class SwimTask extends Task{
         this.lane = lane;
     }
 
-    private Boolean hasBetterTime(Double timeLimit){
+    public Boolean hasGoodTime(Double timeLimit){
         return curentTime <= timeLimit;
     }
 

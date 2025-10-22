@@ -27,6 +27,11 @@ public class Application {
         natatieSolver.execute();
         var minVal = natatieSolver.solve();
         System.out.println("The minimum value is " + minVal);
+
+        var usedTasks = natatieSolver.getUsedTasks();
+        for(var task : usedTasks){
+            System.out.println(task);
+        }
     }
 
 }

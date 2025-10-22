@@ -2,6 +2,8 @@ package container;
 
 import model.Task;
 
+import java.util.List;
+
 public class QueueContainer implements Container {
 
     @Override
@@ -22,5 +24,10 @@ public class QueueContainer implements Container {
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    @Override
+    public List<Task> getTasks() {
+        return List.of();
     }
 }

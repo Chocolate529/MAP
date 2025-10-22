@@ -9,7 +9,7 @@ public abstract class NatatieTaskSolver extends Task implements Solver{
     protected final NatatieFileReader reader;
 
     public NatatieTaskSolver(String taskId, String description, NatatieFileWriter writer, NatatieFileReader reader) {
-        super(taskId, description);
+        super(taskId, description,0);
         this.writer = writer;
         this.reader = reader;
     }

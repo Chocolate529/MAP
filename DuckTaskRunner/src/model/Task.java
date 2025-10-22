@@ -21,9 +21,10 @@ public abstract class Task implements Comparable<Task>{
     private String taskId;
     private String description;
 
-    public Task(String taskId, String description) {
+    public Task(String taskId, String description, int priority) {
         this.taskId = taskId;
         this.description = description;
+        this.priority = priority;
     }
 
     public String getTaskId() {

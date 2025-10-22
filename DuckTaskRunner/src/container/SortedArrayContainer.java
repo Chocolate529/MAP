@@ -51,5 +51,9 @@ public class SortedArrayContainer implements Container {
     public String toString() {
         return tasks.toString();
     }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
 }
 

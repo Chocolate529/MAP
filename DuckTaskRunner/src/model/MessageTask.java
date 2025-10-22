@@ -11,7 +11,7 @@ public class MessageTask extends Task{
     private LocalDateTime date;
 
     public MessageTask(String taskId, String description, String message, String from, String to, LocalDateTime time) {
-        super(taskId, description);
+        super(taskId, description,0);
         this.message = message;
         this.from = from;
         this.to = to;
