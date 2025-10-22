@@ -1,0 +1,9 @@
+package utils.enums;
+
+public enum SolvingStrategy {
+    OPTIMIZATION_STRATEGY,
+    BRUTE_FORCE_STRATEGY,
+    DYNAMIC_PROGRAMMING_STRATEGY,
+    BINARY_SEARCH_STRATEGY,
+    BACKTRACKING_STRATEGY,
+}
