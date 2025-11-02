@@ -1,9 +1,7 @@
-package org.domain;
+package org.domain.users.relationships;
 
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.domain.Entity;
+import org.domain.users.User;
 
 public class Friendship extends Entity<Long> {
     private User user1;
@@ -12,6 +10,7 @@ public class Friendship extends Entity<Long> {
     public Friendship( User user1, User user2) {
         this.user1 = user1;
         this.user2 = user2;
+        user1.addFriend(user2);
     }
 
     public User getUser1() {
@@ -30,5 +29,11 @@ public class Friendship extends Entity<Long> {
         this.user2 = user2;
     }
 
-
+    @Override
+    public String toString() {
+        return super.toString()+"Friendship{" +
+                "user1=" + user1 +
+                ", user2=" + user2 +
+                '}';
+    }
 }

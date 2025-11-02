@@ -1,10 +1,10 @@
 package org.repository;
 
-import org.domain.Entity;
-import org.domain.Friendship;
-import org.domain.User;
+import org.domain.users.relationships.Friendship;
+import org.domain.users.User;
 import org.domain.validators.Validator;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +16,11 @@ public class FriendshipFileRepository extends EntityFileRepository<Long, Friends
     protected Map<Long, User> users;
 
     public FriendshipFileRepository(String fileName, Validator<Friendship> validator, DuckFileRepository duckFileRepository, PersonFileRepository personFileRepository) {
-        super(fileName, validator);
+        super(fileName, validator,false);
         this.duckFileRepository = duckFileRepository;
         this.personFileRepository = personFileRepository;
+        initUsers();
         loadData();
-        refreshUsers();
     }
 
     @Override
@@ -30,8 +30,8 @@ public class FriendshipFileRepository extends EntityFileRepository<Long, Friends
         }
 
         Long id = Long.parseLong(attributes.get(0));
-        Long user1Id = Long.parseLong(attributes.get(0));
-        Long user2Id = Long.parseLong(attributes.get(1));
+        Long user1Id = Long.parseLong(attributes.get(1));
+        Long user2Id = Long.parseLong(attributes.get(2));
 
         User user1 = users.get(user1Id);
         User user2 = users.get(user2Id);
@@ -50,7 +50,8 @@ public class FriendshipFileRepository extends EntityFileRepository<Long, Friends
         return entity.getId()+","+entity.getUser1().getId() + "," + entity.getUser2().getId();
     }
 
-    protected void refreshUsers(){
+    protected void initUsers() {
+        users = new HashMap<>();
         duckFileRepository.findAll().forEach(d -> {
             users.put(d.getId(), d);
         });

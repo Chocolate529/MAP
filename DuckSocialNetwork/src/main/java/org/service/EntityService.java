@@ -42,4 +42,6 @@ public abstract class EntityService<ID, E extends Entity<ID>> implements Service
     public E update(E entity) {
         return repository.update(entity);
     }
+
+
 }

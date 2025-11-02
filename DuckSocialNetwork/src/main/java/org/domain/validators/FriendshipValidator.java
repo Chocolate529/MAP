@@ -1,6 +1,6 @@
 package org.domain.validators;
 
-import org.domain.Friendship;
+import org.domain.users.relationships.Friendship;
 import org.domain.exceptions.ValidationException;
 
 public class FriendshipValidator implements Validator<Friendship> {

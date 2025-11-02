@@ -1,6 +1,6 @@
 package org.domain.validators;
 
-import org.domain.Person;
+import org.domain.users.person.Person;
 import org.domain.exceptions.ValidationException;
 
 import java.time.LocalDate;

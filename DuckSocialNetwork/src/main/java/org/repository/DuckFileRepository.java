@@ -1,28 +1,42 @@
 package org.repository;
 
 
-import org.domain.Duck;
+import org.domain.dtos.DuckData;
+import org.domain.users.duck.Duck;
+import org.domain.users.duck.DuckFactory;
 import org.domain.validators.Validator;
 import org.utils.enums.DuckTypes;
 
 import java.util.List;
 
 public class DuckFileRepository extends EntityFileRepository<Long, Duck>{
+    private final DuckFactory duckFactory;
+
     public DuckFileRepository(String fileName, Validator<Duck> validator) {
-        super(fileName, validator);
+        super(fileName, validator, false);
+        duckFactory = new DuckFactory();
+        loadData();
     }
 
     @Override
     public Duck extractEntity(List<String> attributes) {
         Long id = Long.parseLong(attributes.get(0));
-        String username = attributes.get(1);
-        String password = attributes.get(2);
-        String email =  attributes.get(3);
+
         DuckTypes type = DuckTypes.valueOf(attributes.get(4));
-        Double speed = Double.parseDouble(attributes.get(5));
-        Double rezistance = Double.parseDouble(attributes.get(6));
-        var duck =  new Duck(username, password, email, type, speed, rezistance);
+
+        List<String> dataAttributes = List.of(
+                attributes.get(1), // username
+                attributes.get(2), // password
+                attributes.get(3), // email
+                attributes.get(5), // speed
+                attributes.get(6)  // rezistance
+        );
+
+        DuckData data = new DuckData(dataAttributes);
+        Duck duck = duckFactory.create(type, data);
+
         duck.setId(id);
+
         return duck;
     }
 

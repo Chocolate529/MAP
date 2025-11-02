@@ -11,10 +11,14 @@ import java.util.List;
 public abstract class EntityFileRepository<ID, E extends Entity<ID>> extends EntityRepository<ID, E> {
     String fileName;
 
-    public EntityFileRepository(String fileName, Validator<E> validator) {
+    public EntityFileRepository(String fileName, Validator<E> validator,Boolean autoLoad) {
         super(validator);
         this.fileName = fileName;
-        loadData();
+        if(autoLoad) loadData();
+    }
+
+    public EntityFileRepository(String fileName, Validator<E> validator) {
+        this(fileName, validator, true);
     }
 
     public abstract E extractEntity(List<String> attributes);
@@ -97,5 +101,18 @@ public abstract class EntityFileRepository<ID, E extends Entity<ID>> extends Ent
         } catch (IOException e) {
             throw new RepositoryException("I/O error reading " + fileName, e);
         }
+    }
+    public static <T extends Comparable<T>> T getMaxId(Iterable<? extends Entity<T>> entities) {
+
+        T maxId = null;
+
+        for (Entity<T> e : entities) {
+            if (e.getId() != null) {
+                if (maxId == null || e.getId().compareTo(maxId) > 0) {
+                    maxId = e.getId();
+                }
+            }
+        }
+        return maxId;
     }
 }

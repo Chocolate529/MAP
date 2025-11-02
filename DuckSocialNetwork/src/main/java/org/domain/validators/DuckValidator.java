@@ -1,6 +1,6 @@
 package org.domain.validators;
 
-import org.domain.Duck;
+import org.domain.users.duck.Duck;
 import org.domain.exceptions.ValidationException;
 
 import java.util.regex.Pattern;

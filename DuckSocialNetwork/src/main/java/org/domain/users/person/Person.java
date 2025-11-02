@@ -1,7 +1,9 @@
-package org.domain;
+package org.domain.users.person;
+
+import org.domain.dtos.PersonData;
+import org.domain.users.User;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Person extends User {
     private String firstName;
@@ -18,6 +20,15 @@ public class Person extends User {
         this.occupation = occupation;
         this.dateOfBirth = dateOfBirth;
         this.empathyLevel = empathyLevel;
+    }
+
+    public Person(PersonData pd) {
+        super(pd.getUsername(), pd.getPassword(), pd.getEmail());
+        this.firstName = pd.getFirstName();
+        this.lastName = pd.getLastName();
+        this.occupation = pd.getOccupation();
+        this.dateOfBirth = pd.getDateOfBirth();
+        this.empathyLevel = pd.getEmpathyLevel();
     }
 
     public String getFirstName() {
@@ -82,8 +93,7 @@ public class Person extends User {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "id=" + id +
+        return super.toString()+"Person{" +
                 ", empathyLevel=" + empathyLevel +
                 ", dateOfBirth=" + dateOfBirth +
                 ", occupation='" + occupation + '\'' +

@@ -1,25 +1,25 @@
 package org.service;
 
-import org.domain.Duck;
-import org.domain.Person;
-import org.domain.User;
+import org.domain.users.duck.Duck;
+import org.domain.users.relationships.Friendship;
+import org.domain.users.person.Person;
+import org.domain.users.User;
 import org.domain.exceptions.ServiceException;
-import org.repository.DuckFileRepository;
-import org.repository.PersonFileRepository;
 
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 
 public class UsersService implements Service<Long, User> {
-    private final DuckFileRepository ducksService;
-    private final PersonFileRepository personsService;
+    private final DucksService ducksService;
+    private final PersonsService personsService;
+    private final FriendshipService friendshipService;
 
-    public UsersService(DuckFileRepository ducksService, PersonFileRepository personsService) {
+    public UsersService(DucksService ducksService, PersonsService personsService, FriendshipService friendshipService) {
         this.ducksService = ducksService;
         this.personsService = personsService;
+        this.friendshipService = friendshipService;
     }
-
 
     public User findOne(Long id) {
         User user = ducksService.findOne(id);
@@ -35,24 +35,22 @@ public class UsersService implements Service<Long, User> {
     }
 
     public User save(User entity) {
-        //TODO user factory based on given UserTypes
         if(entity instanceof Duck) return ducksService.save((Duck) entity);
         if(entity instanceof Person) return  personsService.save((Person) entity);
         throw new ServiceException("Invalid user type");
     }
 
     public User delete(Long id) {
-        User user = ducksService.findOne(id);
-        if(user != null) {
-            return ducksService.delete(id);
-        } else {
-            user = personsService.findOne(id);
-            if(user != null) {
-                return personsService.delete(id);
-            } else {
-                throw new ServiceException("No user found with id " + id);
-            }
+        User user = findOne(id);
+        if (user == null) throw new ServiceException("No user found with id " + id);
+
+        var friendships = friendshipService.getFriendshipsOfUser(id);
+        for (Friendship friendship : friendships) {
+            friendshipService.delete(friendship.getId());
         }
+
+        if (user instanceof Duck) return ducksService.delete(id);
+        else return personsService.delete(id);
     }
 
     public User update(User entity) {

@@ -1,12 +1,22 @@
-package org.domain;
+package org.domain.users.duck;
 
+import org.domain.users.User;
+import org.domain.users.duck.flock.Flock;
 import org.utils.enums.DuckTypes;
 
-public class    Duck extends User {
+public  abstract class Duck extends User {
     private DuckTypes duckType;
     private Double speed;
     private Double rezistance;
+    private Flock<Duck> flock;
 
+    public Flock<Duck> getFlock() {
+        return flock;
+    }
+
+    public void setFlock(Flock<Duck> flock) {
+        this.flock = flock;
+    }
 
     public DuckTypes getDuckType() {
         return duckType;
@@ -65,7 +75,7 @@ public class    Duck extends User {
     @Override
     public String toString() {
 
-        return "Duck{" +
+        return super.toString()+"Duck{" +
                 ", rezistance=" + rezistance +
                 ", speed=" + speed +
                 ", duckType=" + duckType +

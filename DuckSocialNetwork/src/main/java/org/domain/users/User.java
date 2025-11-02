@@ -1,10 +1,12 @@
-package org.domain;
+package org.domain.users;
+
+import org.domain.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class User extends Entity<Long>{
+public abstract class User extends Entity<Long> {
     private String username;
     private String password;
     private String email;
@@ -49,9 +51,10 @@ public abstract class User extends Entity<Long>{
 
     @Override
     public String toString() {
-        return "User{" +
+        return super.toString()+"User{" +
                 "username='" + username + '\'' +
-                ", id=" + id +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 

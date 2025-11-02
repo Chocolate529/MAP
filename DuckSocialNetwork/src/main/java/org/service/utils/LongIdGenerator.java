@@ -4,7 +4,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class LongIdGenerator implements IdGenerator<Long> {
 
-    private final AtomicLong counter = new AtomicLong(1);
+    public LongIdGenerator(Long start) {
+        this.counter = new AtomicLong(start);
+    }
+
+    private final AtomicLong counter;
 
     @Override
     public Long nextId() {
