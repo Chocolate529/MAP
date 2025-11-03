@@ -16,4 +16,9 @@ public class SwimmingDuck extends Duck implements Swimming {
         super(duckData.getUsername(), duckData.getPassword(), duckData.getEmail(), DuckTypes.SWIMMING, duckData.getSpeed(), duckData.getRezistance());
 
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+"SwimmingDuck{}";
+    }
 }

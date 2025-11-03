@@ -1,6 +1,7 @@
 package org.domain.users.duck;
 
 import org.domain.dtos.DuckData;
+import org.domain.users.duck.flock.Flock;
 import org.utils.enums.DuckTypes;
 
 import java.util.List;
@@ -23,5 +24,10 @@ public class FlyingAndSwimmingDuck extends Duck implements Swimming,Flying{
     public FlyingAndSwimmingDuck(DuckData duckData) {
         super(duckData.getUsername(), duckData.getPassword(), duckData.getEmail(), DuckTypes.FLYING_AND_SWIMMING, duckData.getSpeed(), duckData.getRezistance());
 
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+"FlyingAndSwimmingDuck{}";
     }
 }

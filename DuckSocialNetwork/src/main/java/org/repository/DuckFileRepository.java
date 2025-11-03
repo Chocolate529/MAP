@@ -33,7 +33,7 @@ public class DuckFileRepository extends EntityFileRepository<Long, Duck>{
         );
 
         DuckData data = new DuckData(dataAttributes);
-        Duck duck = duckFactory.create(type, data);
+        var duck = duckFactory.create(type, data);
 
         duck.setId(id);
 

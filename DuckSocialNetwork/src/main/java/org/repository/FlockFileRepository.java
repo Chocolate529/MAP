@@ -13,15 +13,19 @@ public class FlockFileRepository extends EntityFileRepository<Long, Flock<Duck>>
 
 
     public FlockFileRepository(String fileName, Validator<Flock<Duck>> validator, DuckFileRepository duckFileRepository) {
-        super(fileName, validator);
+        super(fileName, validator,false);
         this.duckFileRepository = duckFileRepository;
+        loadData();
     }
 
     @Override
     public Flock<Duck> extractEntity(List<String> attributes) {
         Long id = Long.parseLong(attributes.get(0));
         String name = attributes.get(1);
-        List<Long> members = attributes.stream().mapToLong(Long::parseLong).boxed().toList();
+
+        List<String> duckIdStrings = attributes.subList(2, attributes.size());
+
+        List<Long> members = duckIdStrings.stream().mapToLong(Long::parseLong).boxed().toList();
 
         var flock = new Flock<>(name);
         flock.setId(id);

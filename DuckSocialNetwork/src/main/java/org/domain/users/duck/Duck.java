@@ -8,13 +8,13 @@ public  abstract class Duck extends User {
     private DuckTypes duckType;
     private Double speed;
     private Double rezistance;
-    private Flock<Duck> flock;
+    private Flock<? extends Duck> flock;
 
-    public Flock<Duck> getFlock() {
+    public Flock<? extends Duck> getFlock() {
         return flock;
     }
 
-    public void setFlock(Flock<Duck> flock) {
+    public void setFlock(Flock<? extends Duck> flock) {
         this.flock = flock;
     }
 

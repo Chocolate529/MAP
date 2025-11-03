@@ -57,11 +57,14 @@ public class ConsoleUserInterface implements UserInterface {
 
     private void manageFlocks(){
         while (true) {
-            System.out.println("\n=== FRIENDSHIP MENU ===");
+            System.out.println("\n=== FLOCKS MENU ===");
             System.out.println("1. Add Flock");
             System.out.println("2. Remove Flock");
             System.out.println("3. View Ducks from a Flock");
             System.out.println("4. View flocks");
+            System.out.println("5. Add duck to flock");
+            System.out.println("6. Remove duck from flock");
+            System.out.println("7. Get average performance of flock");
             System.out.println("0. Back");
             System.out.print("Choose: ");
             int choice = Integer.parseInt(scanner.nextLine());
@@ -73,18 +76,59 @@ public class ConsoleUserInterface implements UserInterface {
                 case 4 -> viewFlocksUI();
                 case 5 -> addDuckToFlockUI();
                 case 6 -> removeDuckFromFlockUI();
+                case 7 -> getAveragePerformanceUI();
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice!");
             }
         }
     }
 
+    private void getAveragePerformanceUI(){
+        try{
+            System.out.println("Enter flock id: ");
+            Long flockId =  Long.parseLong(scanner.nextLine());
+
+            var flock = flockService.getFlockPerformance(flockId);
+            System.out.println("Average speed: " + flock.getSpeedAvg() + "Average rezistance:" + flock.getRezistanceAvg());
+        }catch (Exception e){
+            System.out.println("Error" + e.getMessage());
+        }
+    }
+
+
     private void removeDuckFromFlockUI(){
+        try{
+            System.out.println("Enter Flock id: ");
+            Long flockId = Long.parseLong(scanner.nextLine());
+
+            System.out.println("Enter Duck id: ");
+            Long duckId = Long.parseLong(scanner.nextLine());
+
+            var duck = flockService.removeDuckFromFlock(flockId, duckId);
+            System.out.println("Removed Duck from flock " + duck);
+        }catch (Exception e){
+            System.out.println("Error: "+ e.getMessage());
+        }
 
     }
 
     private void addDuckToFlockUI(){
+        try{
+            System.out.println("Enter Flock id: ");
+            Long flockId = Long.parseLong(scanner.nextLine());
 
+            System.out.println("Enter Duck id: ");
+            Long duckId = Long.parseLong(scanner.nextLine());
+
+            var duck = flockService.addDuckToFlock(flockId, duckId);
+            if(duck == null){
+                System.out.println("Can't add Duck to Flock");
+            } else {
+                System.out.println("Added Duck to flock " + duck);
+            }
+        }catch (Exception e){
+            System.out.println("Error: "+ e.getMessage());
+        }
     }
 
     private void removeFlockUI(){

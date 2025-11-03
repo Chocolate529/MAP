@@ -2,6 +2,7 @@ package org.domain.users.duck.flock;
 
 import org.domain.Entity;
 import org.domain.dtos.FlockPerformanceDTO;
+import org.domain.exceptions.FlockException;
 import org.domain.users.duck.Duck;
 
 import java.util.ArrayList;
@@ -25,6 +26,14 @@ public class Flock<T extends Duck> extends Entity<Long> {
     }
 
     public void addMember(T member) {
+        boolean exists = members.stream()
+                .anyMatch(m -> m.getId().equals(member.getId()));
+
+        if (exists) {
+            throw new FlockException("Duck with ID " + member.getId() + " is already in this flock!");
+        }
+
+        member.setFlock(this);
         members.add(member);
     }
 

@@ -1,5 +1,6 @@
 package org.service;
 
+import org.domain.dtos.FlockPerformanceDTO;
 import org.domain.exceptions.ServiceException;
 import org.domain.users.duck.Duck;
 import org.domain.users.duck.flock.Flock;
@@ -20,8 +21,9 @@ public class FlockService extends EntityService<Long, Flock<Duck>>{
         var flock = repository.findOne(flockId);
         var duck = ducksService.findOne(duckId);
 
-        if(flock != null){
+        if(flock != null && duck != null){
             flock.addMember(duck);
+            repository.update(flock);
         }
         return duck;
     }
@@ -29,13 +31,14 @@ public class FlockService extends EntityService<Long, Flock<Duck>>{
     public Duck removeDuckFromFlock(Long flockId, Long duckId) {
         var flock = repository.findOne(flockId);
         var duck = ducksService.findOne(duckId);
-        if(flock != null){
+        if(flock != null && duck != null){
             flock.removeMember(duck);
+            repository.update(flock);
         }
         return duck;
     }
 
-    public Flock<Duck> getFlockByDuckId(Long duckId) {
+    public Flock<? extends Duck> getFlockByDuckId(Long duckId) {
         var duck = ducksService.findOne(duckId);
         if(duck == null){
             throw new ServiceException("No duck with id" +duckId);
@@ -53,5 +56,13 @@ public class FlockService extends EntityService<Long, Flock<Duck>>{
             member.setFlock(null);
         });
         return repository.delete(flockId);
+    }
+
+    public FlockPerformanceDTO getFlockPerformance(Long flockId) {
+        var flock = repository.findOne(flockId);
+        if(flock == null){
+            throw new ServiceException("No flock with id" +flockId);
+        }
+        return flock.getAveragePerformance();
     }
 }
