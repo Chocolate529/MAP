@@ -26,22 +26,36 @@ public class RaceEventService extends EntityService<Long, RaceEvent> {
 
     public RaceEvent addSpecifiedNrOfDucksToAnRaceEvent(Long id, Integer nrOfDucks) {
 
-        if (nrOfDucks > StreamSupport.stream(ducksService.findAll().spliterator(),false).count()){
-            throw new ServiceException("Not enough Ducks");
+        long swimmingCount = StreamSupport.stream(ducksService.findAll().spliterator(), false)
+                .filter(SwimmingDuck.class::isInstance)
+                .count();
+
+        if (nrOfDucks > swimmingCount) {
+            throw new ServiceException("Not enough Swimming Ducks");
         }
 
         RaceEvent event = repository.findOne(id);
-        if (event == null){
-            throw new  ServiceException("Event not found");
+        if (event == null) {
+            throw new ServiceException("Event not found");
         }
 
-        StreamSupport.stream(ducksService.findAll().spliterator(), false)
+        List<SwimmingDuck> allDucks = StreamSupport.stream(ducksService.findAll().spliterator(), false)
                 .filter(SwimmingDuck.class::isInstance)
                 .map(SwimmingDuck.class::cast)
+                .toList();
+
+        List<SwimmingDuck> sortedDucks = allDucks.stream()
                 .sorted(Comparator.comparing(Duck::getRezistance)
                         .thenComparing(Duck::getSpeed))
-                .forEach(event::addObserver);
+                .toList();
 
+        List<SwimmingDuck> selectedDucks = sortedDucks.stream()
+                .limit(nrOfDucks)
+                .toList();
+
+        for (SwimmingDuck d : selectedDucks) {
+            event.addObserver( d);
+        }
         validator.validate(event);
         return repository.update(event);
     }

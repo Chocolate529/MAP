@@ -93,7 +93,7 @@ public class ConsoleUserInterface implements UserInterface {
             String name = scanner.nextLine();
 
             var event = raceEventService.save(new RaceEvent(name));
-            System.out.println("Added event: " + event);
+            System.out.println("Added event");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -122,10 +122,13 @@ public class ConsoleUserInterface implements UserInterface {
 
             RaceEvent event = raceEventService.findOne(id);
             if(event != null){
-                 event.getSubscribers().stream()
-                         .findAny()
-                 .ifPresentOrElse(System.out::println,
-                         () -> System.out.println("No subscribers"));
+                List<SwimmingDuck> subs = event.getSubscribers();
+
+                if (!subs.isEmpty()) {
+                    subs.forEach(System.out::println);
+                } else {
+                    System.out.println("No subscribers");
+                }
             } else {
                 System.out.println("No event with id: " + id);
             }
@@ -144,7 +147,7 @@ public class ConsoleUserInterface implements UserInterface {
 
             var event = raceEventService.addSpecifiedNrOfDucksToAnRaceEvent(id, number);
             System.out.println("Added ducks:");
-            event.getSubscribers().forEach(System.out::println);
+            raceEventService.findOne(id).getSubscribers().forEach(System.out::println);
 
         } catch (Exception e){
             System.out.println("Error: " + e.getMessage());
@@ -152,10 +155,14 @@ public class ConsoleUserInterface implements UserInterface {
     }
     private void viewEventsUI() {
         try {
-            StreamSupport.stream(raceEventService.findAll().spliterator(), false)
-                    .findAny()
-                    .ifPresentOrElse(System.out::println,
-                        () -> System.out.println("No events"));
+            List<RaceEvent> events = StreamSupport.stream(raceEventService.findAll().spliterator(), false)
+                    .toList();
+
+            if (events.isEmpty()) {
+                System.out.println("No events");
+            } else {
+                events.forEach(System.out::println);
+            }
         } catch (Exception e){
             System.out.println("Error: " + e.getMessage());
         }

@@ -8,14 +8,13 @@ import java.util.List;
 
 public class RaceEvent extends Event<SwimmingDuck> {
 
-    Double maxTime;
-    List<Integer> distances;
+    Double maxTime = 0.0;
+    List<Integer> distances = new ArrayList<>();
     String name;
 
-    public RaceEvent(List<SwimmingDuck> subscribers) {
+    public RaceEvent(List<SwimmingDuck> subscribers, String name) {
         super(subscribers);
-        distances = new ArrayList<>();
-        maxTime = 0.0;
+        this.name = name;
     }
 
     public String getName() {
@@ -28,9 +27,7 @@ public class RaceEvent extends Event<SwimmingDuck> {
 
     public RaceEvent(String name){
         super(new ArrayList<>());
-        distances = new ArrayList<>();
         this.name = name;
-        maxTime = 0.0;
     }
 
     @Override

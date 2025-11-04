@@ -34,7 +34,7 @@ public class FlockFileRepository extends EntityFileRepository<Long, Flock<Duck>>
                     .map(Long::parseLong)
                     .map(duckFileRepository::findOne)
                     .filter(Objects::nonNull)
-                    .toList();
+                    .collect(Collectors.toCollection(ArrayList::new));
         }
 
         var flock = new Flock<>(name);

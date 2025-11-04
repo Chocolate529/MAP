@@ -27,30 +27,34 @@ public class RaceEventFileRepository extends EntityFileRepository<Long, RaceEven
         Double maxTime = Double.parseDouble(attributes.get(2));
 
 
+        List<Integer> distances;
+        if (attributes.size() > 3 && attributes.get(3) != null && !attributes.get(3).isBlank()) {
+            distances = Arrays.stream(attributes.get(3).split("\\|"))
+                    .filter(str -> !str.isBlank())
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            distances = new ArrayList<>();
+        }
 
-        List<Integer> distances = Optional.ofNullable(attributes.size() > 3 ? attributes.get(3) : null)
-                .filter(s -> !s.isBlank())
-                .map(s -> Arrays.stream(s.split("\\|"))
-                        .filter(str -> !str.isBlank())
-                        .map(Integer::parseInt)
-                        .toList())
-                .orElse(Collections.emptyList());
+        List<Long> duckIds ;
+        if(attributes.size() > 4 && attributes.get(4) != null && !attributes.get(4).isBlank()) {
+            duckIds = Arrays.stream(attributes.get(4).split("\\|"))
+                    .filter(str -> !str.isBlank())
+                    .map(Long::parseLong)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else{
+                duckIds = new ArrayList<>();
+        }
 
-        List<Long> duckIds = Optional.ofNullable(attributes.size() > 4 ? attributes.get(4) : null)
-                .filter(s -> !s.isBlank())
-                .map( s-> Arrays.stream(s.split("\\|"))
-                        .filter(str -> !str.isBlank())
-                        .map(Long::parseLong)
-                        .toList())
-                .orElse(Collections.emptyList());
 
         List<SwimmingDuck> ducks  = duckIds.stream()
                 .map(duckFileRepository::findOne)
                 .filter(Objects::nonNull)
                 .map(d -> (SwimmingDuck) d)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        var raceEvent = new RaceEvent(ducks);
+        var raceEvent = new RaceEvent(ducks, name);
         raceEvent.setId(id);
         raceEvent.setMaxTime(maxTime);
         raceEvent.setDistances(distances);

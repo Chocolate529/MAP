@@ -19,7 +19,7 @@ public abstract class Event<T extends Observer> extends Entity<Long> implements 
 
     @Override
     public void addObserver(T o) {
-        subscribers.add((T) o);
+        subscribers.add( o);
     }
 
     @Override
