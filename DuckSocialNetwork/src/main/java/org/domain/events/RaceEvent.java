@@ -10,6 +10,7 @@ public class RaceEvent extends Event<SwimmingDuck> {
 
     Double maxTime;
     List<Integer> distances;
+    String name;
 
     public RaceEvent(List<SwimmingDuck> subscribers) {
         super(subscribers);
@@ -17,10 +18,27 @@ public class RaceEvent extends Event<SwimmingDuck> {
         maxTime = 0.0;
     }
 
-    public RaceEvent(){
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public RaceEvent(String name){
         super(new ArrayList<>());
         distances = new ArrayList<>();
+        this.name = name;
         maxTime = 0.0;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+"RaceEvent{" +
+                "maxTime=" + maxTime +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public Double getMaxTime() {

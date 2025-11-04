@@ -7,9 +7,7 @@ import org.domain.users.duck.SwimmingDuck;
 import org.domain.validators.Validator;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RaceEventFileRepository extends EntityFileRepository<Long, RaceEvent>{
@@ -25,15 +23,26 @@ public class RaceEventFileRepository extends EntityFileRepository<Long, RaceEven
     @Override
     public RaceEvent extractEntity(List<String> attributes) {
         Long id = Long.parseLong(attributes.get(0));
-        Double maxTime = Double.parseDouble(attributes.get(1));
+        String name = attributes.get(1);
+        Double maxTime = Double.parseDouble(attributes.get(2));
 
-        List<Integer> distances = Arrays.stream(attributes.get(2).split("\\|"))
-                .map(Integer::parseInt)
-                .toList();
 
-        List<Long> duckIds = Arrays.stream(attributes.get(3).split("\\|"))
-                .map(Long::parseLong)
-                .toList();
+
+        List<Integer> distances = Optional.ofNullable(attributes.size() > 3 ? attributes.get(3) : null)
+                .filter(s -> !s.isBlank())
+                .map(s -> Arrays.stream(s.split("\\|"))
+                        .filter(str -> !str.isBlank())
+                        .map(Integer::parseInt)
+                        .toList())
+                .orElse(Collections.emptyList());
+
+        List<Long> duckIds = Optional.ofNullable(attributes.size() > 4 ? attributes.get(4) : null)
+                .filter(s -> !s.isBlank())
+                .map( s-> Arrays.stream(s.split("\\|"))
+                        .filter(str -> !str.isBlank())
+                        .map(Long::parseLong)
+                        .toList())
+                .orElse(Collections.emptyList());
 
         List<SwimmingDuck> ducks  = duckIds.stream()
                 .map(duckFileRepository::findOne)
@@ -60,6 +69,7 @@ public class RaceEventFileRepository extends EntityFileRepository<Long, RaceEven
 
         return String.join(",",
                 String.valueOf(entity.getId()),
+                entity.getName(),
                 String.valueOf(entity.getMaxTime()),
                 distancesString,
                 observersString);

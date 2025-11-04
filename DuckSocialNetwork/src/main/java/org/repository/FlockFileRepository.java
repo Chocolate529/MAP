@@ -4,6 +4,7 @@ import org.domain.users.duck.Duck;
 import org.domain.users.duck.flock.Flock;
 import org.domain.validators.Validator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -26,12 +27,15 @@ public class FlockFileRepository extends EntityFileRepository<Long, Flock<Duck>>
         String name = attributes.get(1);
 
 
-
-        List<Duck> members = Arrays.stream(attributes.get(2).split("\\|"))
-                .map(Long::parseLong)
-                .map(duckFileRepository::findOne)
-                .filter(Objects::nonNull)
-                .toList();
+        List<Duck> members = new ArrayList<>();
+        if (attributes.size() > 2 && !attributes.get(2).isBlank()) {
+            members = Arrays.stream(attributes.get(2).split("\\|"))
+                    .filter(s -> !s.isBlank()) // skip empty strings
+                    .map(Long::parseLong)
+                    .map(duckFileRepository::findOne)
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
 
         var flock = new Flock<>(name);
         flock.setId(id);

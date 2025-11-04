@@ -11,6 +11,7 @@ public class Constants {
     public static final String DUCK_INPUT_FILE = BASE_PATH_RESOURCES.resolve("ducks").toString();
     public static final String FRIENDSHIPS_INPUT_FILE = BASE_PATH_RESOURCES.resolve("friendships").toString();
     public static final String FLOCKS_INPUT_FILE = BASE_PATH_RESOURCES.resolve("flocks").toString();
+    public static final String RACE_EVENTS_INPUT_FILE = BASE_PATH_RESOURCES.resolve("race_events").toString();
 
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

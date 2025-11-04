@@ -2,14 +2,17 @@ package org.ui;
 
 import org.domain.dtos.DuckData;
 import org.domain.dtos.PersonData;
+import org.domain.events.RaceEvent;
 import org.domain.users.UserFactory;
 import org.domain.users.duck.Duck;
+import org.domain.users.duck.SwimmingDuck;
 import org.domain.users.duck.flock.Flock;
 import org.domain.users.relationships.Friendship;
 import org.domain.users.person.Person;
 import org.domain.users.User;
 import org.service.FlockService;
 import org.service.FriendshipService;
+import org.service.RaceEventService;
 import org.service.UsersService;
 import org.utils.enums.DuckTypes;
 import org.utils.enums.PersonTypes;
@@ -17,6 +20,7 @@ import org.utils.enums.PersonTypes;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.StreamSupport;
 
 public class ConsoleUserInterface implements UserInterface {
     private final UsersService usersService;
@@ -24,12 +28,14 @@ public class ConsoleUserInterface implements UserInterface {
     private final Scanner scanner = new Scanner(System.in);
     private final UserFactory userFactory;
     private final FlockService flockService;
+    private final RaceEventService raceEventService;
 
-    public ConsoleUserInterface(UsersService usersService, FriendshipService friendshipService, FlockService flockService) {
+    public ConsoleUserInterface(UsersService usersService, FriendshipService friendshipService, FlockService flockService, RaceEventService raceEventService) {
         this.usersService = usersService;
         this.friendshipService = friendshipService;
         this.flockService = flockService;
         this.userFactory = new UserFactory();
+        this.raceEventService = raceEventService;
     }
 
     public void run() {
@@ -38,6 +44,7 @@ public class ConsoleUserInterface implements UserInterface {
             System.out.println("1. Manage Users");
             System.out.println("2. Manage Friendships");
             System.out.println("3. Manage Flocks");
+            System.out.println("4. Manage Events");
             System.out.println("0. Exit");
             System.out.print("Choose: ");
             int choice = Integer.parseInt(scanner.nextLine());
@@ -46,12 +53,111 @@ public class ConsoleUserInterface implements UserInterface {
                 case 1 -> manageUsers();
                 case 2 -> manageFriendships();
                 case 3 -> manageFlocks();
+                case 4 -> manageEvents();
                 case 0 -> {
                     System.out.println("Bye ");
                     return;
                 }
                 default -> System.out.println("Invalid choice!");
             }
+        }
+    }
+
+    private void manageEvents() {
+        while (true) {
+            System.out.println("\n=== Events MENU ===");
+            System.out.println("1. Add event");
+            System.out.println("2. Remove Event");
+            System.out.println("3. View Ducks from a Event");
+            System.out.println("4. View Events");
+            System.out.println("5. Add ducks to Event");
+            System.out.println("0. Back");
+            System.out.print("Choose: ");
+            int choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1 -> addEventUI();
+                case 2 -> removeEventUI();
+                case 3 -> viewDucksFromEventUI();
+                case 4 -> viewEventsUI();
+                case 5 -> addDucksToEventUI();
+                case 0 -> { return; }
+                default -> System.out.println("Invalid choice!");
+            }
+        }
+    }
+
+    private void addEventUI() {
+        try {
+            System.out.println("Enter event name: ");
+            String name = scanner.nextLine();
+
+            var event = raceEventService.save(new RaceEvent(name));
+            System.out.println("Added event: " + event);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void removeEventUI() {
+        try {
+            System.out.println("Enter event id: ");
+            Long id = Long.parseLong(scanner.nextLine());
+
+            var event =  raceEventService.delete(id);
+            if(event != null) {
+                System.out.println("Removed event: " + event);
+            } else {
+                System.out.println("Event doesn't exist!");
+            }
+        } catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    private void viewDucksFromEventUI() {
+        try {
+            System.out.println("Enter event id: ");
+            Long id = Long.parseLong(scanner.nextLine());
+
+            RaceEvent event = raceEventService.findOne(id);
+            if(event != null){
+                 event.getSubscribers().stream()
+                         .findAny()
+                 .ifPresentOrElse(System.out::println,
+                         () -> System.out.println("No subscribers"));
+            } else {
+                System.out.println("No event with id: " + id);
+            }
+        } catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    private void addDucksToEventUI() {
+        try {
+            System.out.println("Enter event id: ");
+            Long id = Long.parseLong(scanner.nextLine());
+
+
+            System.out.println("Number of ducks: ");
+            Integer number = Integer.parseInt(scanner.nextLine());
+
+            var event = raceEventService.addSpecifiedNrOfDucksToAnRaceEvent(id, number);
+            System.out.println("Added ducks:");
+            event.getSubscribers().forEach(System.out::println);
+
+        } catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    private void viewEventsUI() {
+        try {
+            StreamSupport.stream(raceEventService.findAll().spliterator(), false)
+                    .findAny()
+                    .ifPresentOrElse(System.out::println,
+                        () -> System.out.println("No events"));
+        } catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

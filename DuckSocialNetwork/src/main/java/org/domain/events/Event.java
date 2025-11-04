@@ -28,6 +28,13 @@ public abstract class Event<T extends Observer> extends Entity<Long> implements 
     }
 
     @Override
+    public String toString() {
+        return "Event{" +
+                ", id=" + id +
+                '}';
+    }
+
+    @Override
     public void notifyObservers() {
         for(T o : subscribers){
             o.update();

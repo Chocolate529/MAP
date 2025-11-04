@@ -1,9 +1,6 @@
 package org.example;
 
-import org.domain.validators.DuckValidator;
-import org.domain.validators.FlockValidator;
-import org.domain.validators.FriendshipValidator;
-import org.domain.validators.PersonValidator;
+import org.domain.validators.*;
 import org.repository.*;
 import org.service.*;
 import org.service.utils.LongIdGenerator;
@@ -21,12 +18,14 @@ public class Main {
         var duckValidator = new DuckValidator(Constants.EMAIL_REGEX);
         var friendshipValidator = new FriendshipValidator();
         var flockValidator = new FlockValidator();
+        var raceEventValidator = new RaceEventValidator();
 
         //repos
         DuckFileRepository duckRepo = null;
         PersonFileRepository personRepo = null;
         FriendshipFileRepository friendshipRepo = null;
         FlockFileRepository flockRepo = null;
+        RaceEventFileRepository raceEventRepo = null;
         try {
             personRepo = new PersonFileRepository(Constants.PERSON_INPUT_FILE, personValidator);
             duckRepo = new DuckFileRepository(Constants.DUCK_INPUT_FILE, duckValidator);
@@ -35,6 +34,8 @@ public class Main {
                     duckRepo, personRepo);
 
             flockRepo = new FlockFileRepository(Constants.FLOCKS_INPUT_FILE, flockValidator, duckRepo);
+            raceEventRepo = new RaceEventFileRepository(Constants.RACE_EVENTS_INPUT_FILE, raceEventValidator, duckRepo);
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return;
@@ -47,18 +48,20 @@ public class Main {
 
         Long maxFriendshipId = EntityFileRepository.getMaxId(friendshipRepo.findAll());
         Long maxFlockId = EntityFileRepository.getMaxId(flockRepo.findAll());
+        Long  maxEventId = EntityFileRepository.getMaxId(raceEventRepo.findAll());
 
         //id generator
         var usersIdGenerator = new LongIdGenerator(Objects.requireNonNullElse(maxUsersId, 0L) + 1);
         var friendshipIdGenerator = new LongIdGenerator(Objects.requireNonNullElse(maxFriendshipId, 0L) + 1);
         var flockIdGenerator = new LongIdGenerator(Objects.requireNonNullElse(maxFlockId, 0L) + 1);
-
+        var eventIdGenerator = new LongIdGenerator(Objects.requireNonNullElse(maxEventId, 0L) + 1);
 
         //service
         var duckService = new DucksService(duckValidator, duckRepo, usersIdGenerator);
         var personService = new PersonsService(personValidator, personRepo, usersIdGenerator);
         var friendshipService = new FriendshipService(friendshipValidator, friendshipRepo, friendshipIdGenerator);
         var flockService = new FlockService(flockValidator, flockRepo, flockIdGenerator, duckService);
+        var raceEventService = new RaceEventService(raceEventValidator, raceEventRepo, eventIdGenerator, duckService);
 
         var usersService = new UsersService(duckService, personService,friendshipService);
 
@@ -67,7 +70,7 @@ public class Main {
         duckService.setFlockService(flockService);
 
         //ui
-        var app = new ConsoleUserInterface(usersService, friendshipService,flockService);
+        var app = new ConsoleUserInterface(usersService, friendshipService, flockService, raceEventService);
         app.run();
     }
 }
