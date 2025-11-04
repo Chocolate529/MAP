@@ -4,7 +4,9 @@ import org.domain.users.duck.Duck;
 import org.domain.users.duck.flock.Flock;
 import org.domain.validators.Validator;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FlockFileRepository extends EntityFileRepository<Long, Flock<Duck>> {
@@ -23,25 +25,32 @@ public class FlockFileRepository extends EntityFileRepository<Long, Flock<Duck>>
         Long id = Long.parseLong(attributes.get(0));
         String name = attributes.get(1);
 
-        List<String> duckIdStrings = attributes.subList(2, attributes.size());
 
-        List<Long> members = duckIdStrings.stream().mapToLong(Long::parseLong).boxed().toList();
+
+        List<Duck> members = Arrays.stream(attributes.get(2).split("\\|"))
+                .map(Long::parseLong)
+                .map(duckFileRepository::findOne)
+                .filter(Objects::nonNull)
+                .toList();
 
         var flock = new Flock<>(name);
         flock.setId(id);
-        members.forEach(member -> {
-            flock.addMember(duckFileRepository.findOne(member));
-        });
+        members.forEach(flock::addMember);
 
         return flock;
     }
 
     @Override
     protected String createEntityAsString(Flock<Duck> f) {
+
+        String membersString = f.getMembers().stream()
+                .map(d -> d.getId().toString())
+                .collect(Collectors.joining("|"));
+
         return String.join(",",
                 String.valueOf(f.getId()),
                 f.getFlockName(),
-                f.getMembers().stream().map(duck -> String.valueOf(duck.getId())).collect(Collectors.joining(","))
+                membersString
         );
     }
 }

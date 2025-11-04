@@ -73,6 +73,11 @@ public  abstract class Duck extends User {
     }
 
     @Override
+    public void update() {
+
+    }
+
+    @Override
     public String toString() {
 
         return super.toString()+"Duck{" +

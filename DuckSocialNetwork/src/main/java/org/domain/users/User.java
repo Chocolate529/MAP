@@ -1,12 +1,13 @@
 package org.domain.users;
 
 import org.domain.Entity;
+import org.domain.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class User extends Entity<Long> {
+public abstract class User extends Entity<Long> implements Observer {
     private String username;
     private String password;
     private String email;
@@ -74,6 +75,7 @@ public abstract class User extends Entity<Long> {
     public abstract void logout();
     public abstract void sendMessage();
     public abstract void receiveMessage();
+    public abstract void update();
 
     public void addFriend(User user) {
         if (user == null) return;

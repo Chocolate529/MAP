@@ -92,6 +92,11 @@ public class Person extends User {
     }
 
     @Override
+    public void update() {
+
+    }
+
+    @Override
     public String toString() {
         return super.toString()+"Person{" +
                 ", empathyLevel=" + empathyLevel +
