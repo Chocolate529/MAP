@@ -7,6 +7,9 @@ import org.utils.enums.DuckTypes;
 public class DuckFactory implements Factory<Duck, DuckTypes, DuckData> {
     @Override
     public Duck create(DuckTypes duckTypes, DuckData duckData) {
+        if (duckTypes == null) {
+            return null;
+        }
         switch (duckTypes) {
             case FLYING -> {
                 return new FlyingDuck(duckData);
@@ -17,7 +20,7 @@ public class DuckFactory implements Factory<Duck, DuckTypes, DuckData> {
             case FLYING_AND_SWIMMING -> {
                 return new FlyingAndSwimmingDuck(duckData);
             }
-            case null, default -> {
+            default -> {
                 return null;
             }
         }
