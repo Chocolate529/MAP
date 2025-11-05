@@ -5,6 +5,10 @@ build/
 !**/src/test/**/build/
 .kotlin
 
+# Database files
+ducksocialnetwork.mv.db
+ducksocialnetwork.trace.db
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
