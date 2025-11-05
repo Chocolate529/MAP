@@ -74,7 +74,7 @@ public  abstract class Duck extends User {
 
     @Override
     public void update() {
-
+        System.out.println("I am duck " + id + "and i was added to the event");
     }
 
     @Override

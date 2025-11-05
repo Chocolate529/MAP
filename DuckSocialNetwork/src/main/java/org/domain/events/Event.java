@@ -17,6 +17,10 @@ public abstract class Event<T extends Observer> extends Entity<Long> implements 
         this.subscribers = (subscribers != null) ? subscribers : new ArrayList<>();
     }
 
+    public void setSubscribers(List<T> subscribers) {
+        this.subscribers = subscribers;
+    }
+
     @Override
     public void addObserver(T o) {
         subscribers.add( o);

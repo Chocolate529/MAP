@@ -39,6 +39,10 @@ public class RaceEventService extends EntityService<Long, RaceEvent> {
             throw new ServiceException("Event not found");
         }
 
+        if(!event.getSubscribers().isEmpty()) {
+            event.setSubscribers(new ArrayList<>());
+        }
+
         List<SwimmingDuck> allDucks = StreamSupport.stream(ducksService.findAll().spliterator(), false)
                 .filter(SwimmingDuck.class::isInstance)
                 .map(SwimmingDuck.class::cast)
@@ -57,6 +61,7 @@ public class RaceEventService extends EntityService<Long, RaceEvent> {
             event.addObserver( d);
         }
         validator.validate(event);
+        event.notifyObservers();
         return repository.update(event);
     }
 
