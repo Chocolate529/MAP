@@ -143,8 +143,8 @@ public class MigrateFileToDatabase {
                 // Add participants from database
                 event.getSubscribers().forEach(participant -> {
                     Duck dbDuck = duckDbRepo.findOne(participant.getId());
-                    if (dbDuck != null) {
-                        newEvent.addObserver(participant);
+                    if (dbDuck != null && dbDuck instanceof org.domain.users.duck.SwimmingDuck) {
+                        newEvent.addObserver((org.domain.users.duck.SwimmingDuck) dbDuck);
                     }
                 });
                 
