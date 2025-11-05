@@ -85,19 +85,38 @@ java -cp build/libs/DuckSocialNetwork-1.0-SNAPSHOT.jar org.example.Main
 
 ### From Files to Database
 
-To migrate from file-based storage to database storage:
+To migrate from file-based storage to database storage, use the provided migration utility:
 
-1. Set `USE_DATABASE = false` in `Main.java`
-2. Ensure your data files exist in `src/main/resources/`:
-   - `persons`
-   - `ducks`
-   - `friendships`
-   - `flocks`
-   - `race_events`
-3. Run the application once to load data from files
-4. Set `USE_DATABASE = true` in `Main.java`
-5. Run the application - it will initialize an empty database
-6. Manually add data through the application interface or write a migration script
+```bash
+# Build the project first
+./gradlew build
+
+# Run the migration utility
+java -cp "build/libs/DuckSocialNetwork-1.0-SNAPSHOT.jar:~/.gradle/caches/modules-2/files-2.1/com.h2database/h2/2.2.224/*/h2-2.2.224.jar" org.example.MigrateFileToDatabase
+```
+
+The migration utility will:
+1. Initialize the database schema
+2. Load all data from the text files in `src/main/resources/`
+3. Clear any existing data in the database
+4. Migrate all entities to the database:
+   - Persons
+   - Ducks
+   - Friendships
+   - Flocks
+   - Race Events
+
+After successful migration, you can set `USE_DATABASE = true` in `Main.java` to use the database.
+
+### Verification
+
+To verify that the database persistence is working correctly, run:
+
+```bash
+java -cp "build/libs/DuckSocialNetwork-1.0-SNAPSHOT.jar:~/.gradle/caches/modules-2/files-2.1/com.h2database/h2/2.2.224/*/h2-2.2.224.jar" org.example.DatabaseVerification
+```
+
+This will test all CRUD operations and report the results.
 
 ### From Database to Files
 
@@ -120,6 +139,32 @@ The database repositories only read from files during initial load. To export da
 - `RaceEventDatabaseRepository`
 
 All repositories implement the same `Repository<ID, E>` interface, ensuring consistency across storage methods.
+
+## Utility Classes
+
+### DatabaseVerification
+A utility class to verify database persistence functionality. Tests all CRUD operations:
+- Create
+- Read
+- Update
+- Delete
+
+Run with:
+```bash
+java -cp "build/libs/DuckSocialNetwork-1.0-SNAPSHOT.jar:<h2-jar-path>" org.example.DatabaseVerification
+```
+
+### MigrateFileToDatabase
+A utility class to migrate data from text files to the database. Automatically:
+- Initializes database schema
+- Loads data from files
+- Clears existing database data
+- Migrates all entities to database
+
+Run with:
+```bash
+java -cp "build/libs/DuckSocialNetwork-1.0-SNAPSHOT.jar:<h2-jar-path>" org.example.MigrateFileToDatabase
+```
 
 ## Dependencies
 
