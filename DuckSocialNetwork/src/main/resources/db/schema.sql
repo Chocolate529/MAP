@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS persons (
     last_name VARCHAR(255),
     occupation VARCHAR(255),
     date_of_birth DATE,
-    empathy_level DOUBLE
+    empathy_level DOUBLE PRECISION
 );
 
 -- Create Ducks table
@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS ducks (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     duck_type VARCHAR(50) NOT NULL,
-    speed DOUBLE,
-    rezistance DOUBLE
+    speed DOUBLE PRECISION,
+    rezistance DOUBLE PRECISION
 );
 
 -- Create Friendships table
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS flock_members (
 CREATE TABLE IF NOT EXISTS race_events (
     id BIGINT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    max_time DOUBLE
+    max_time DOUBLE PRECISION
 );
 
 -- Create Race Event Participants table (junction table)
