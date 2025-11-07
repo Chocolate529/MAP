@@ -85,13 +85,14 @@ public class DatabaseConnection {
      * Read the schema SQL file from resources
      */
     private static String readSchemaFile() throws IOException {
-        InputStream inputStream = DatabaseConnection.class.getResourceAsStream(SCHEMA_FILE);
-        if (inputStream == null) {
-            throw new IOException("Schema file not found: " + SCHEMA_FILE);
-        }
-        
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            return reader.lines().collect(Collectors.joining("\n"));
+        try (InputStream inputStream = DatabaseConnection.class.getResourceAsStream(SCHEMA_FILE)) {
+            if (inputStream == null) {
+                throw new IOException("Schema file not found: " + SCHEMA_FILE);
+            }
+            
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                return reader.lines().collect(Collectors.joining("\n"));
+            }
         }
     }
     
