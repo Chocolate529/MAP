@@ -28,15 +28,20 @@ private static final boolean USE_DATABASE = true; // Set to false to use file st
 
 ### Database Schema
 
-The H2 database is automatically initialized with the following tables:
+The database schema is defined in `src/main/resources/db/schema.sql`. This SQL file contains all table creation statements and is automatically executed when the database is initialized.
 
-- **persons**: Stores person user data
-- **ducks**: Stores duck user data
-- **friendships**: Stores friendship relationships between users
-- **flocks**: Stores flock information
-- **flock_members**: Junction table for flock memberships
-- **race_events**: Stores race event information
-- **race_event_participants**: Junction table for race event participants
+**Schema File Location**: `src/main/resources/db/schema.sql`
+
+You can modify the schema by editing this SQL file. The `DatabaseConnection` class will read and execute it on initialization.
+
+**Tables Created:**
+1. `persons` - User person data
+2. `ducks` - User duck data
+3. `friendships` - User relationships
+4. `flocks` - Flock information
+5. `flock_members` - Flock memberships (junction table)
+6. `race_events` - Race event information
+7. `race_event_participants` - Event participants (junction table)
 
 ### Database Files
 

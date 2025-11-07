@@ -1,9 +1,14 @@
 package org.database;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.stream.Collectors;
 
 /**
  * Manages database connections and schema initialization
@@ -12,6 +17,7 @@ public class DatabaseConnection {
     private static final String DB_URL = "jdbc:h2:./ducksocialnetwork;AUTO_SERVER=TRUE";
     private static final String DB_USER = "sa";
     private static final String DB_PASSWORD = "";
+    private static final String SCHEMA_FILE = "/db/schema.sql";
     
     private static Connection connection = null;
     
@@ -26,83 +32,66 @@ public class DatabaseConnection {
     }
     
     /**
-     * Initialize database schema
+     * Initialize database schema from SQL file
      */
     public static void initializeSchema() throws SQLException {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             
-            // Create Persons table
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS persons (
-                    id BIGINT PRIMARY KEY,
-                    username VARCHAR(255) NOT NULL UNIQUE,
-                    password VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) NOT NULL,
-                    first_name VARCHAR(255),
-                    last_name VARCHAR(255),
-                    occupation VARCHAR(255),
-                    date_of_birth DATE,
-                    empathy_level DOUBLE
-                )
-            """);
+            // Read SQL schema from file
+            String sql = readSchemaFile();
             
-            // Create Ducks table
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS ducks (
-                    id BIGINT PRIMARY KEY,
-                    username VARCHAR(255) NOT NULL UNIQUE,
-                    password VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) NOT NULL,
-                    duck_type VARCHAR(50) NOT NULL,
-                    speed DOUBLE,
-                    rezistance DOUBLE
-                )
-            """);
-            
-            // Create Friendships table
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS friendships (
-                    id BIGINT PRIMARY KEY,
-                    user1_id BIGINT NOT NULL,
-                    user2_id BIGINT NOT NULL
-                )
-            """);
-            
-            // Create Flocks table
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS flocks (
-                    id BIGINT PRIMARY KEY,
-                    flock_name VARCHAR(255) NOT NULL
-                )
-            """);
-            
-            // Create Flock Members table (junction table)
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS flock_members (
-                    flock_id BIGINT NOT NULL,
-                    duck_id BIGINT NOT NULL,
-                    PRIMARY KEY (flock_id, duck_id)
-                )
-            """);
-            
-            // Create Race Events table
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS race_events (
-                    id BIGINT PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL,
-                    max_time DOUBLE
-                )
-            """);
-            
-            // Create Race Event Participants table (junction table)
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS race_event_participants (
-                    event_id BIGINT NOT NULL,
-                    duck_id BIGINT NOT NULL,
-                    PRIMARY KEY (event_id, duck_id)
-                )
-            """);
+            // Split by semicolon and execute each statement
+            String[] statements = sql.split(";");
+            for (String statement : statements) {
+                String trimmed = statement.trim();
+                // Skip empty statements and comment-only lines
+                if (!trimmed.isEmpty()) {
+                    // Remove comment lines but keep the SQL
+                    String cleanSql = removeComments(trimmed);
+                    if (!cleanSql.isEmpty()) {
+                        stmt.execute(cleanSql);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new SQLException("Failed to read schema file: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Remove SQL comments from a statement
+     */
+    private static String removeComments(String sql) {
+        StringBuilder result = new StringBuilder();
+        String[] lines = sql.split("\n");
+        for (String line : lines) {
+            String trimmedLine = line.trim();
+            // Skip lines that start with --
+            if (!trimmedLine.startsWith("--")) {
+                // Remove inline comments
+                int commentIndex = line.indexOf("--");
+                if (commentIndex >= 0) {
+                    result.append(line, 0, commentIndex).append("\n");
+                } else {
+                    result.append(line).append("\n");
+                }
+            }
+        }
+        return result.toString().trim();
+    }
+    
+    /**
+     * Read the schema SQL file from resources
+     */
+    private static String readSchemaFile() throws IOException {
+        InputStream inputStream = DatabaseConnection.class.getResourceAsStream(SCHEMA_FILE);
+        if (inputStream == null) {
+            throw new IOException("Schema file not found: " + SCHEMA_FILE);
+        }
+        
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            return reader.lines().collect(Collectors.joining("\n"));
         }
     }
     
