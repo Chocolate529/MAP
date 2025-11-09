@@ -1,18 +1,26 @@
 package org.example;
 
+import database.DatabaseConnection;
 import org.domain.validators.*;
-import org.repository.*;
+import org.repository.db.*;
+import org.repository.file.*;
+import org.repository.file.user.duck.DuckFileRepository;
+import org.repository.file.user.duck.flock.FlockFileRepository;
+import org.repository.file.user.events.RaceEventFileRepository;
+import org.repository.file.user.person.PersonFileRepository;
+import org.repository.file.user.relationships.FriendshipFileRepository;
 import org.service.*;
 import org.service.utils.LongIdGenerator;
 import org.ui.ConsoleUserInterface;
 import org.utils.Constants;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static void main() {
+    static void main() throws SQLException {
         //validators
         var personValidator = new PersonValidator(Constants.EMAIL_REGEX);
         var duckValidator = new DuckValidator(Constants.EMAIL_REGEX);
@@ -20,21 +28,29 @@ public class Main {
         var flockValidator = new FlockValidator();
         var raceEventValidator = new RaceEventValidator();
 
-        //repos
-        DuckFileRepository duckRepo = null;
-        PersonFileRepository personRepo = null;
-        FriendshipFileRepository friendshipRepo = null;
-        FlockFileRepository flockRepo = null;
-        RaceEventFileRepository raceEventRepo = null;
         try {
-            personRepo = new PersonFileRepository(Constants.PERSON_INPUT_FILE, personValidator);
-            duckRepo = new DuckFileRepository(Constants.DUCK_INPUT_FILE, duckValidator);
+            // Initialize database schema
+            DatabaseConnection.initDatabaseSchema();
+            System.out.println("Database schema initialized successfully.");
+        } catch (SQLException e) {
+            System.err.println("Error initializing database: " + e.getMessage());
+            return;
+        }
+        //repos
+        DuckDatabaseRepository duckRepo = null;
+        PersonDatabaseRepository personRepo = null;
+        FriendshipDatabaseRepository friendshipRepo = null;
+        FlockDatabaseRepository flockRepo = null;
+        RaceEventDatabaseRepository raceEventRepo = null;
+        try {
+            personRepo = new PersonDatabaseRepository(personValidator);
+            duckRepo = new DuckDatabaseRepository(duckValidator);
 
-            friendshipRepo = new FriendshipFileRepository(Constants.FRIENDSHIPS_INPUT_FILE, friendshipValidator,
+            friendshipRepo = new FriendshipDatabaseRepository(friendshipValidator,
                     duckRepo, personRepo);
 
-            flockRepo = new FlockFileRepository(Constants.FLOCKS_INPUT_FILE, flockValidator, duckRepo);
-            raceEventRepo = new RaceEventFileRepository(Constants.RACE_EVENTS_INPUT_FILE, raceEventValidator, duckRepo);
+            flockRepo = new FlockDatabaseRepository(flockValidator, duckRepo);
+            raceEventRepo = new RaceEventDatabaseRepository(raceEventValidator, duckRepo);
 
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -72,6 +88,7 @@ public class Main {
         //ui
         var app = new ConsoleUserInterface(usersService, friendshipService, flockService, raceEventService);
         app.run();
+        DatabaseConnection.closeConnection();
     }
 }
 

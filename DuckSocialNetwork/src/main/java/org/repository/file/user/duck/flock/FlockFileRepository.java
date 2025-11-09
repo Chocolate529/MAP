@@ -1,8 +1,10 @@
-package org.repository;
+package org.repository.file.user.duck.flock;
 
 import org.domain.users.duck.Duck;
 import org.domain.users.duck.flock.Flock;
 import org.domain.validators.Validator;
+import org.repository.file.EntityFileRepository;
+import org.repository.file.user.duck.DuckFileRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;

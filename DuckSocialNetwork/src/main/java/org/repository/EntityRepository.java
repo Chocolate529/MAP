@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityRepository<ID, E extends Entity<ID>> implements Repository<ID,E> {
-    Map<ID, E> entities;
-    Validator<E> validator;
+    protected Map<ID, E> entities;
+    protected Validator<E> validator;
 
     public EntityRepository(Validator<E> validator) {
         this.validator = validator;

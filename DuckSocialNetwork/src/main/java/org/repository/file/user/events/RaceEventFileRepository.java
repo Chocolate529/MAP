@@ -1,16 +1,16 @@
-package org.repository;
+package org.repository.file.user.events;
 
-import org.domain.Observer;
 import org.domain.events.RaceEvent;
 import org.domain.users.duck.Duck;
 import org.domain.users.duck.SwimmingDuck;
 import org.domain.validators.Validator;
+import org.repository.file.EntityFileRepository;
+import org.repository.file.user.duck.DuckFileRepository;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RaceEventFileRepository extends EntityFileRepository<Long, RaceEvent>{
+public class RaceEventFileRepository extends EntityFileRepository<Long, RaceEvent> {
 
     private DuckFileRepository duckFileRepository;
 

@@ -1,15 +1,16 @@
-package org.repository;
+package org.repository.file.user.duck;
 
 
 import org.domain.dtos.DuckData;
 import org.domain.users.duck.Duck;
 import org.domain.users.duck.DuckFactory;
 import org.domain.validators.Validator;
+import org.repository.file.EntityFileRepository;
 import org.utils.enums.DuckTypes;
 
 import java.util.List;
 
-public class DuckFileRepository extends EntityFileRepository<Long, Duck>{
+public class DuckFileRepository extends EntityFileRepository<Long, Duck> {
     private final DuckFactory duckFactory;
 
     public DuckFileRepository(String fileName, Validator<Duck> validator) {

@@ -64,20 +64,20 @@ public class FriendshipService extends EntityService<Long, Friendship>{
     private void initFriendshipNetwork() {
         if(friendshipNetwork == null) {
             friendshipNetwork = new HashMap<>();
+        }
+        Iterable<User> users = usersService.findAll();
 
-            Iterable<User> users = usersService.findAll();
 
-
-            for(User user : users){
-                List<User> friends = user.getFriends();
-                for(User friend : friends){
-                    friendshipNetwork.putIfAbsent(friend.getId(),new HashSet<>());
-                    friendshipNetwork.putIfAbsent(user.getId(),new HashSet<>());
-                    friendshipNetwork.get(friend.getId()).add(user.getId());
-                    friendshipNetwork.get(user.getId()).add(friend.getId());
-                }
+        for(User user : users){
+            List<User> friends = user.getFriends();
+            for(User friend : friends){
+                friendshipNetwork.putIfAbsent(friend.getId(),new HashSet<>());
+                friendshipNetwork.putIfAbsent(user.getId(),new HashSet<>());
+                friendshipNetwork.get(friend.getId()).add(user.getId());
+                friendshipNetwork.get(user.getId()).add(friend.getId());
             }
         }
+
     }
 
 

@@ -1,10 +1,11 @@
 // java
-package org.repository;
+package org.repository.file.user.person;
 
 import org.domain.dtos.PersonData;
 import org.domain.users.person.Person;
 import org.domain.users.person.PersonFactory;
 import org.domain.validators.Validator;
+import org.repository.file.EntityFileRepository;
 import org.utils.enums.PersonTypes;
 
 import java.util.List;

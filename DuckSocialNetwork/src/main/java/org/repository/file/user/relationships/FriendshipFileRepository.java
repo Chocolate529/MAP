@@ -1,8 +1,11 @@
-package org.repository;
+package org.repository.file.user.relationships;
 
 import org.domain.users.relationships.Friendship;
 import org.domain.users.User;
 import org.domain.validators.Validator;
+import org.repository.file.EntityFileRepository;
+import org.repository.file.user.duck.DuckFileRepository;
+import org.repository.file.user.person.PersonFileRepository;
 
 import java.util.HashMap;
 import java.util.List;

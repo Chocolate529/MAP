@@ -3,6 +3,7 @@ package org.service;
 import org.domain.dtos.FlockPerformanceDTO;
 import org.domain.exceptions.ServiceException;
 import org.domain.users.duck.Duck;
+import org.domain.users.duck.SwimmingDuck;
 import org.domain.users.duck.flock.Flock;
 import org.domain.validators.Validator;
 import org.repository.Repository;
@@ -21,7 +22,11 @@ public class FlockService extends EntityService<Long, Flock<Duck>>{
         var flock = repository.findOne(flockId);
         var duck = ducksService.findOne(duckId);
 
-        if(flock != null && duck != null){
+        if(!(duck instanceof SwimmingDuck)){
+            throw new ServiceException("Duck is not a SwimmingDuck");
+        }
+
+        if(flock != null){
             flock.addMember(duck);
             repository.update(flock);
         }

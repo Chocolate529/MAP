@@ -1,8 +1,9 @@
-package org.repository;
+package org.repository.file;
 
 import org.domain.Entity;
 import org.domain.exceptions.RepositoryException;
 import org.domain.validators.Validator;
+import org.repository.EntityRepository;
 
 import java.io.*;
 import java.util.Arrays;
