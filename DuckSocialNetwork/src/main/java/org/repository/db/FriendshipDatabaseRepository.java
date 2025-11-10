@@ -52,6 +52,7 @@ public class FriendshipDatabaseRepository extends EntityDatabaseRepository<Long,
 
         var friendShip = new Friendship(user1, user2);
         friendShip.setId(id);
+        user1.addFriend(user2);
         return friendShip;
     }
 
